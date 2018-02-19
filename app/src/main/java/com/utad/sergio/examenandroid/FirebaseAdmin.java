@@ -47,4 +47,8 @@ public class FirebaseAdmin {
             }
         });
     }
+
+    public void LogOut(){
+        FirebaseAuth.getInstance().signOut();
+    }
 }

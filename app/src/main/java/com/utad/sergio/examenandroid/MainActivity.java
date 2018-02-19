@@ -1,5 +1,6 @@
 package com.utad.sergio.examenandroid;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -22,6 +23,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.GenericTypeIndicator;
 
@@ -48,7 +50,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DataHolder.instance.firebaseAdmin.setListener(events);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //TODO Setear Color global de Toolbar
+
+        toolbar.setBackgroundColor(getResources().getColor(R.color.colour3));
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -113,8 +116,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_logout) {
+            LogOut();
         }
 
         return super.onOptionsItemSelected(item);
@@ -143,6 +146,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void botonClicked(View v){
+
+    }
+
+    public void botonClicked2(View v){
+
+    }
+
+    public void LogOut(){
+        try{
+            DataHolder.instance.firebaseAdmin.LogOut();
+            Intent intent = new Intent(getBaseContext(),LoginTwitterActivity.class);
+            startActivity(intent);
+            finish();
+        }catch (Exception e){
+            FirebaseCrash.report(new Exception("NO SE PUDO DESLOGUEAR CORRECTAMENTE"));
+        }
+
+
     }
 }
 
