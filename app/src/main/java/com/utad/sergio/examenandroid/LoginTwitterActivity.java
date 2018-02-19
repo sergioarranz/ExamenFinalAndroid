@@ -3,6 +3,7 @@ package com.utad.sergio.examenandroid;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
@@ -42,5 +43,18 @@ public class LoginTwitterActivity extends AppCompatActivity {
 
         // Pass the activity result to the login button.
         loginButton.onActivityResult(requestCode, resultCode, data);
+    }
+}
+
+class LoginTwitterActivityEvents implements FirebaseAdminListener {
+
+    @Override
+    public void fireBaseAdmin_LoginOK() {
+        Log.v("LoginTwitterActivity", "LOGIN TWITTER CORRECTO");
+    }
+
+    @Override
+    public void fireBaseAdmin_RegisterOK() {
+        Log.v("LoginTwitterActivity", "REGISTER TWITTER CORRECTO");
     }
 }
