@@ -1,5 +1,7 @@
 package com.utad.sergio.examenandroid;
 
+import org.json.JSONObject;
+
 /**
  * Created by sergio on 19/2/18.
  */
@@ -7,7 +9,7 @@ package com.utad.sergio.examenandroid;
 public class DataHolder {
 
     public static DataHolder instance = new DataHolder();
-
+    public static JSONObject jsonTwitter;
     public static FirebaseAdmin firebaseAdmin;
 
     public DataHolder(){

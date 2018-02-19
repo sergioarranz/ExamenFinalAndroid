@@ -13,6 +13,7 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.TwitterAuthProvider;
+import com.google.firebase.crash.FirebaseCrash;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.Twitter;
@@ -20,10 +21,14 @@ import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class LoginTwitterActivity extends AppCompatActivity {
 
     TwitterLoginButton loginButton;
     LoginTwitterActivityEvents events;
+    private JSONObject data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +45,14 @@ public class LoginTwitterActivity extends AppCompatActivity {
         loginButton.setCallback(new Callback<TwitterSession>() {
             @Override
             public void success(Result<TwitterSession> result) {
-                Log.v("Usuario", result.data.getUserName().toString());
+                data = new JSONObject();
+                try {
+                    data.put("user", result.data.getUserName().toString());
+                    data.put("id", result.data.getUserId());
+                } catch (JSONException e){
+                    FirebaseCrash.report(new Exception("Datos de usuario creados de forma errónea"));
+                    e.printStackTrace();
+                }
                 handleTwitterSession(result.data);
             }
 
@@ -89,6 +101,7 @@ public class LoginTwitterActivity extends AppCompatActivity {
                         // ...
                     }
                 });
+        DataHolder.instance.jsonTwitter = data;
     }
 }
 
