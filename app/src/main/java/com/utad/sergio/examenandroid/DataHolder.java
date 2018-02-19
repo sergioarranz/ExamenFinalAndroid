@@ -8,9 +8,9 @@ public class DataHolder {
 
     public static DataHolder instance = new DataHolder();
 
-    public FirebaseAdmin fireBaseAdmin;
+    public static FirebaseAdmin firebaseAdmin;
 
     public DataHolder(){
-        fireBaseAdmin=new FirebaseAdmin();
+        firebaseAdmin=new FirebaseAdmin();
     }
 }

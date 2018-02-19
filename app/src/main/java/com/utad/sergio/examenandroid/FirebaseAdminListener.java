@@ -5,6 +5,5 @@ package com.utad.sergio.examenandroid;
  */
 
 public interface FirebaseAdminListener {
-    public void fireBaseAdmin_LoginOK();
-    public void fireBaseAdmin_RegisterOK();
+    public void firebaseAdmin_LoginOK(boolean blOK);
 }

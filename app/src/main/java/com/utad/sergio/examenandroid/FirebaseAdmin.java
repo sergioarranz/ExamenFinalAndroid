@@ -9,7 +9,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class FirebaseAdmin {
 
-    private FirebaseAuth mAuth;
+    public FirebaseAuth mAuth;
     public FirebaseAdminListener listener;
     public FirebaseUser user;
 
