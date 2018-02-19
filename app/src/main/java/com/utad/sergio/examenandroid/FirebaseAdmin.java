@@ -22,6 +22,7 @@ public class FirebaseAdmin {
 
     public FirebaseAdmin(){
         mAuth = FirebaseAuth.getInstance();
+        database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
     }
 

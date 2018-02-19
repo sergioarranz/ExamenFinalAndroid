@@ -15,6 +15,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.GenericTypeIndicator;
 
@@ -28,6 +35,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     TextView nombre, email;
     Map<String,Profile> profiles;
     MainActivityEvents events;
+    SupportMapFragment mapFragment;
+    MarkerProfileFragment markerProfileFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +80,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         DataHolder.instance.firebaseAdmin.downloadAndObserveBranch("profiles");
+
+        //Map Fragment Setting
+
+        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(events);
+        markerProfileFragment = (MarkerProfileFragment) getSupportFragmentManager().findFragmentById(R.id.UserInfoFragment);
     }
 
     @Override
@@ -131,9 +146,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 }
 
-class MainActivityEvents implements FirebaseAdminListener {
+class MainActivityEvents implements FirebaseAdminListener, OnMapReadyCallback,GoogleMap.OnMarkerClickListener {
 
     MainActivity mainActivity;
+    private GoogleMap mMap;
 
     public MainActivityEvents(MainActivity mainActivity){
         this.mainActivity = mainActivity;
@@ -147,14 +163,60 @@ class MainActivityEvents implements FirebaseAdminListener {
     @Override
     public void fireBaseAdminbranchDownload(String branch, DataSnapshot dataSnapshot) {
         if(branch.equals("profiles")){
-            Log.v("--->","PROFILES HAS"+ mainActivity.profiles);
             mainActivity.profiles = new HashMap<>();
             GenericTypeIndicator<Map<String,Profile>> indicator = new GenericTypeIndicator<Map<String,Profile>>(){};
             mainActivity.profiles = dataSnapshot.getValue(indicator);
+            agregarPinesProfiles();
         }
     }
 
     public void setData(){
         mainActivity.email.setText(DataHolder.firebaseAdmin.mAuth.getCurrentUser().getEmail());
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        Profile profile = (Profile) marker.getTag();
+        mainActivity.markerProfileFragment.txtUser.setText(profile.name.toString());
+        mainActivity.markerProfileFragment.txtNumber.setText(String.valueOf(profile.number));
+        return  true;
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        mMap.setOnMarkerClickListener(this);
+    }
+
+    public void quitarPinesProfiles(){
+        if(mainActivity.profiles!=null) {
+            for (Object i : mainActivity.profiles.keySet()) {
+                Profile perfilTemp = mainActivity.profiles.get(i.toString());
+                if (perfilTemp.getMarker() != null) {
+                    perfilTemp.getMarker().remove();
+                }
+            }
+        }
+    }
+
+    public void agregarPinesProfiles(){
+        LatLng perfilPos=null;
+        for (Object i: mainActivity.profiles.keySet()){
+            Profile perfilTemp = mainActivity.profiles.get(i.toString());
+
+            perfilPos = new LatLng(perfilTemp.lat, perfilTemp.lon);
+
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(perfilPos);
+            markerOptions.title(perfilTemp.name);
+
+            if(mMap!= null){
+                Marker marker = mMap.addMarker(markerOptions);
+                marker.setTag(perfilTemp);
+                perfilTemp.setMarker(marker);
+            }
+
+        }
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(perfilPos,5));
     }
 }
