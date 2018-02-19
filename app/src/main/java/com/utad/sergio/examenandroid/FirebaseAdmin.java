@@ -14,12 +14,14 @@ import com.google.firebase.database.ValueEventListener;
 
 public class FirebaseAdmin {
 
+    // Variables para el uso de información de Firebase
     public FirebaseAuth mAuth;
     public FirebaseDatabase database;
     public FirebaseAdminListener listener;
     public FirebaseUser user;
     public DatabaseReference myRef;
 
+    // Constructor
     public FirebaseAdmin(){
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
@@ -30,6 +32,7 @@ public class FirebaseAdmin {
         this.listener=listener;
     }
 
+    // Descargar y Observar cambios en la rama
     public void downloadAndObserveBranch(final String branch) {
         DatabaseReference refBranch = myRef.child(branch);
         refBranch.addValueEventListener(new ValueEventListener() {
@@ -48,6 +51,7 @@ public class FirebaseAdmin {
         });
     }
 
+    // Desloguearse en Firebase
     public void LogOut(){
         FirebaseAuth.getInstance().signOut();
     }

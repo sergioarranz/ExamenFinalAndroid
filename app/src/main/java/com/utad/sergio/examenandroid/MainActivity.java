@@ -45,15 +45,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Inicializacion de FirebaseAdmin, gestor de eventos y escuchador
         DataHolder.firebaseAdmin = new FirebaseAdmin();
         events = new MainActivityEvents(this);
         DataHolder.instance.firebaseAdmin.setListener(events);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
+        // Set de Color global para la app
         toolbar.setBackgroundColor(getResources().getColor(R.color.colour3));
         setSupportActionBar(toolbar);
 
+        // Boton Floating (esquina inferior derecha)
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,10 +72,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        // Menú de navegación
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         View header = navigationView.getHeaderView(0);
 
+        // Set datos de Twitter en NavigationView
         nombre = (TextView)header.findViewById(R.id.nombreNav);
         email = (TextView)header.findViewById(R.id.emailNav);
         try {
@@ -84,7 +89,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         DataHolder.instance.firebaseAdmin.downloadAndObserveBranch("profiles");
 
-        //Map Fragment Setting
+
+        // Inicialización de los fragments
 
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(events);
@@ -148,6 +154,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    // Métodos linkeados vinculados al clic del botón de MarkerProfileFragment
     public void botonClicked(View v){
 
     }
@@ -155,6 +162,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void botonClicked2(View v){
 
     }
+
+    // Método cerrar sesión usuario Firebase vinculado a botón Cerrar sesión
 
     public void LogOut(){
         try{
@@ -169,10 +178,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 }
-
+// Escuchador de eventos implementando las clases de Firebase y Geolocalización de Google
 class MainActivityEvents implements FirebaseAdminListener, OnMapReadyCallback,GoogleMap.OnMarkerClickListener {
 
     MainActivity mainActivity;
+    // Instancia de Mapa
     private GoogleMap mMap;
 
     public MainActivityEvents(MainActivity mainActivity){
@@ -183,7 +193,7 @@ class MainActivityEvents implements FirebaseAdminListener, OnMapReadyCallback,Go
     public void firebaseAdmin_LoginOK(boolean blOK) {
 
     }
-
+    // Descarga de datos rama Firebase
     @Override
     public void fireBaseAdminbranchDownload(String branch, DataSnapshot dataSnapshot) {
         if(branch.equals("profiles")){
@@ -193,11 +203,12 @@ class MainActivityEvents implements FirebaseAdminListener, OnMapReadyCallback,Go
             agregarPinesProfiles();
         }
     }
-
+    // Seteo de datos en el NavigationView
     public void setData(){
         mainActivity.email.setText(DataHolder.firebaseAdmin.mAuth.getCurrentUser().getEmail());
     }
 
+    // Pines pinchados
     @Override
     public boolean onMarkerClick(Marker marker) {
         Profile profile = (Profile) marker.getTag();
@@ -205,7 +216,7 @@ class MainActivityEvents implements FirebaseAdminListener, OnMapReadyCallback,Go
         mainActivity.markerProfileFragment.txtNumber.setText(String.valueOf(profile.number));
         return  true;
     }
-
+    // Primer método por el que pasa el mapa
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;

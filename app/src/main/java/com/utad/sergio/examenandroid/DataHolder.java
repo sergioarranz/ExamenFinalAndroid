@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 public class DataHolder {
 
+    // Definición de variables estáticas para almacenar la información del usuario, datos de JSON y Firebase
     public static DataHolder instance = new DataHolder();
     public static JSONObject jsonTwitter;
     public static FirebaseAdmin firebaseAdmin;
