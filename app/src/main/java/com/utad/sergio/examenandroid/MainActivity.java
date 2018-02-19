@@ -3,6 +3,7 @@ package com.utad.sergio.examenandroid;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,15 +13,28 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+import com.google.firebase.database.DataSnapshot;
+
+import org.json.JSONException;
+
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    TextView nombre, email;
+    MainActivityEvents events;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        DataHolder.firebaseAdmin = new FirebaseAdmin();
+        events = new MainActivityEvents(this);
+        DataHolder.instance.firebaseAdmin.setListener(events);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //TODO Setear Color global de Toolbar
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -40,6 +54,17 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        View header = navigationView.getHeaderView(0);
+        nombre = (TextView)header.findViewById(R.id.nombreNav);
+        email = (TextView)header.findViewById(R.id.emailNav);
+        try {
+            nombre.setText(DataHolder.jsonTwitter.get("user").toString());
+            events.setData();
+        }catch (JSONException e){
+            Log.v("Exception",""+e.getMessage());
+        }
+
+        DataHolder.instance.firebaseAdmin.downloadAndObserveBranch("profiles");
     }
 
     @Override
@@ -97,5 +122,24 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+}
+
+class MainActivityEvents implements FirebaseAdminListener {
+
+    MainActivity mainActivity;
+
+    public MainActivityEvents(MainActivity mainActivity){
+        this.mainActivity = mainActivity;
+    }
+
+    @Override
+    public void firebaseAdmin_LoginOK(boolean blOK) {
+
+    }
+
+    @Override
+    public void fireBaseAdminbranchDownload(String branch, DataSnapshot dataSnapshot) {
+
     }
 }
