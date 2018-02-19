@@ -16,12 +16,17 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.GenericTypeIndicator;
 
 import org.json.JSONException;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     TextView nombre, email;
+    Map<String,Profile> profiles;
     MainActivityEvents events;
 
     @Override
@@ -55,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         View header = navigationView.getHeaderView(0);
+
         nombre = (TextView)header.findViewById(R.id.nombreNav);
         email = (TextView)header.findViewById(R.id.emailNav);
         try {
@@ -140,6 +146,15 @@ class MainActivityEvents implements FirebaseAdminListener {
 
     @Override
     public void fireBaseAdminbranchDownload(String branch, DataSnapshot dataSnapshot) {
+        if(branch.equals("profiles")){
+            Log.v("--->","PROFILES HAS"+ mainActivity.profiles);
+            mainActivity.profiles = new HashMap<>();
+            GenericTypeIndicator<Map<String,Profile>> indicator = new GenericTypeIndicator<Map<String,Profile>>(){};
+            mainActivity.profiles = dataSnapshot.getValue(indicator);
+        }
+    }
 
+    public void setData(){
+        mainActivity.email.setText(DataHolder.firebaseAdmin.mAuth.getCurrentUser().getEmail());
     }
 }

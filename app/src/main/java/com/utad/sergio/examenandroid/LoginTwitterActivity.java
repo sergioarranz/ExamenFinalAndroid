@@ -14,6 +14,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.TwitterAuthProvider;
 import com.google.firebase.crash.FirebaseCrash;
+import com.google.firebase.database.DataSnapshot;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.Twitter;
@@ -123,5 +124,10 @@ class LoginTwitterActivityEvents implements FirebaseAdminListener {
         } else {
 
         }
+    }
+
+    @Override
+    public void fireBaseAdminbranchDownload(String branch, DataSnapshot dataSnapshot) {
+
     }
 }
